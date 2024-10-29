@@ -392,7 +392,17 @@ a:hover {
 }
 
 /* Responsive design */
+/* Update existing media queries and add new ones */
 @media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  section {
+    padding: 1rem;
+    margin: 1rem 0;
+  }
+
   .about-info {
     grid-template-columns: 1fr;
   }
@@ -401,17 +411,124 @@ a:hover {
     border-left: none;
     border-top: 2px solid var(--comment);
     padding-left: 0;
-    padding-top: 2rem;
-    margin-top: 2rem;
+    padding-top: 1rem;
+    margin-top: 1rem;
   }
 
   .skills-grid {
     grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
+  .contact-link {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0.5rem;
+  }
+
+  .label {
+    width: auto;
+    margin-bottom: 0.2rem;
+  }
+
+  .pgp-info {
+    padding: 0.5rem;
+  }
+
+  .key-servers {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .key-servers a {
+    margin: 0;
   }
 }
 
 @media (max-width: 480px) {
+  .container {
+    padding: 0.5rem;
+  }
+
+  section {
+    padding: 0.75rem;
+    margin: 0.75rem 0;
+  }
+
   .skills-grid {
     grid-template-columns: 1fr;
+  }
+
+  .project {
+    padding: 1rem;
+  }
+
+  .tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+
+  .tech-tag {
+    font-size: 0.8rem;
+    margin: 0;
+  }
+
+  h1 {
+    font-size: 1.75rem;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+  }
+
+  h3 {
+    font-size: 1.1rem;
+  }
+
+  .about-text {
+    font-size: 0.9rem;
+  }
+
+  .project-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .project-links a {
+    margin: 0;
+  }
+}
+
+/* Add styles for better touch targets on mobile */
+@media (hover: none) {
+  .contact-link,
+  .project-links a,
+  .key-servers a {
+    padding: 0.75rem;
+  }
+
+  .skill-tag,
+  .tech-tag {
+    padding: 0.4rem 0.6rem;
+  }
+}
+
+/* Improve readability on small screens */
+@media (max-width: 360px) {
+  body {
+    font-size: 14px;
+  }
+
+  .container {
+    padding: 0.25rem;
+  }
+
+  .contact-link,
+  .pgp-info,
+  .project {
+    word-break: break-word;
   }
 }
