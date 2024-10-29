@@ -1,1 +1,1 @@
-My website at www.jasonscheffel.com
+My website at jasonscheffel.com
