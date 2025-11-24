@@ -4,137 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jason Scheffel</title>
-    <link rel="stylesheet" href="style.css?v=ecbb4648">
+    <link rel="stylesheet" href="style.css?v=984a951c">
     <link rel="icon" type="image/svg+xml" href="melting-face-emoji-icon.svg">
   </head>
   <body>
+    <canvas id="background"></canvas>
     <div class="container">
-      <!-- Identity Section -->
-      <section class="identity">
-        <h1>Jason Scheffel</h1>
-        <p>Student</p>
-      </section>
-      <!-- About Section -->
-      <section id="about" class="about-section">
-        <h2>About</h2>
-        <div class="about-info">
-          <div class="contact-details">
-            <div class="contact-section">
-              <a href="mailto:contact@jasonscheffel.com" class="contact-link">
-                <span class="label">Email:</span>
-                contact@jasonscheffel.com
-              </a>
-              <a href="tel:+1234567890" class="contact-link">
-                <span class="label">Phone:</span>
-                +1 (234) 567-890
-              </a>
-              <a href="path/to/resume.pdf" class="contact-link">
-                <span class="label">Resume:</span>
-                Download PDF
-              </a>
-            </div>
-            <div class="contact-section">
-              <a href="https://github.com/jason-scheffel" class="contact-link">
-                <span class="label">GitHub:</span>
-                jason-scheffel
-              </a>
-              <a href="https://huggingface.co/jason-scheffel" class="contact-link">
-                <span class="label">Hugging Face:</span>
-                jason-scheffel
-              </a>
-            </div>
-            <div class="pgp-info">
-              <span class="label">PGP:</span>
-              <code>0123 4567 89AB CDEF</code>
-              <div class="key-servers">
-                Available on:<br>
-                <a href="#">keys.openpgp.org</a>
-                <a href="#">keyserver.ubuntu.com</a>
-                <a href="#">keyserver.ubuntu.com</a>
-                <a href="#">keyserver.ubuntu.com</a>
-              </div>
-            </div>
-          </div>
-          <div class="right-content">
-            <div class="about-text">
-              <p><font color="#34eb49"><b>If this message is here, then this website isnt ready yet and is most likely filled with dummy text and random stuff.</b></font></p>
-              <p>Math. and C.S. double major focused on machine learning.
-                Currently working on a multimodal, distributed, and concurrent chatbot framework, in addition to
-                developing a programming language with syntax utilizing Gen Z and Gen Alpha slang and
-                an 'emotional state' system where code elements (variables, methods, classes) require management of their well-being status&mdash;emotional state.</p>
-            </div>
-            <div class="skills-section">
-              <h3>Technologies & Skills</h3>
-              <div class="skills-grid">
-                <div class="skill-category">
-                  <h4>Languages</h4>
-                  <span class="skill-tag">Python</span>
-                  <span class="skill-tag">Java</span>
-                  <span class="skill-tag">SQL</span>
-                </div>
-                <div class="skill-category">
-                  <h4>Libraries/Frameworks</h4>
-                  <span class="skill-tag">PyTorch</span>
-                  <span class="skill-tag">LangChain</span>
-                  <span class="skill-tag">LangGraph</span>
-                </div>
-                <div class="skill-category">
-                  <h4>Other</h4>
-                  <span class="skill-tag">Git</span>
-                  <span class="skill-tag">Docker</span>
-                  <span class="skill-tag">Linux</span>
-                </div>
-              </div>
-            </div>
-          </div>
+      <h1>Jason Scheffel</h1>
+      <div class="links">
+        <div class="link-item">
+          <span class="label">email</span>
+          <a href="mailto:contact@jasonscheffel.com">contact@jasonscheffel.com</a>
         </div>
-      </section>
-      <!-- Projects Section -->
-      <section id="projects">
-        <h2>Projects</h2>
-        <div class="project">
-          <h3>Project Alpha</h3>
-          <p>A sophisticated data processing pipeline that handles real-time streaming data,
-            implementing advanced algorithms for pattern recognition.</p>
-          <div class="project-links">
-            <a href="#">GitHub →</a>
-            <a href="#">Live Demo →</a>
-          </div>
-          <h4>Key Features</h4>
-          <ul>
-            <li>Real-time data processing with sub-second latency</li>
-            <li>Scalable architecture handling 100k+ events/second</li>
-            <li>Custom-built pattern recognition algorithms</li>
-          </ul>
-          <div class="tech-stack">
-            <span class="tech-tag">Python</span>
-            <span class="tech-tag">Apache Kafka</span>
-            <span class="tech-tag">PostgreSQL</span>
-            <span class="tech-tag">Docker</span>
-          </div>
+        <div class="link-item">
+          <span class="label">github</span>
+          <a href="https://github.com/jason-scheffel">github.com/jason-scheffel</a>
         </div>
-        <div class="project">
-          <h3>Project Beta</h3>
-          <p>An automated deployment system that streamlines the CI/CD pipeline,
-            reducing deployment time by 80% while implementing robust security measures.</p>
-          <div class="project-links">
-            <a href="#">GitHub →</a>
-            <a href="#">Documentation →</a>
-          </div>
-          <h4>Key Features</h4>
-          <ul>
-            <li>Automated security scanning and compliance checks</li>
-            <li>Multi-environment deployment support</li>
-            <li>Rollback capabilities with zero downtime</li>
-          </ul>
-          <div class="tech-stack">
-            <span class="tech-tag">Go</span>
-            <span class="tech-tag">Kubernetes</span>
-            <span class="tech-tag">Terraform</span>
-            <span class="tech-tag">GitHub Actions</span>
-          </div>
-        </div>
-      </section>
+      </div>
     </div>
+    <script src="balls.js?v=d36d1002"></script>
   </body>
 </html>
