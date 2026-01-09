@@ -21,12 +21,11 @@ body {
 
 .container {
   text-align: center;
-  padding: 2rem 3rem;
+  padding: 2.5rem 4rem;
   position: relative;
   z-index: 1;
   background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border: 4px double #000;
 }
 
 h1 {
