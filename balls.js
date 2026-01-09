@@ -1,5 +1,6 @@
 const canvas = document.getElementById('background');
 const ctx = canvas.getContext('2d');
+const container = document.querySelector('.container');
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
@@ -8,6 +9,16 @@ window.addEventListener('resize', () => {
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 });
+
+function getContainerRect() {
+  const rect = container.getBoundingClientRect();
+  return {
+    left: rect.left,
+    right: rect.right,
+    top: rect.top,
+    bottom: rect.bottom
+  };
+}
 
 class Ball {
   constructor(x, y, radius, vx, vy, color) {
@@ -35,6 +46,41 @@ class Ball {
     }
     if (this.y + this.radius > canvas.height || this.y - this.radius < 0) {
       this.vy = -this.vy;
+    }
+
+    // Container collision
+    const box = getContainerRect();
+    const nextX = this.x + this.vx;
+    const nextY = this.y + this.vy;
+
+    // Check if ball overlaps with container
+    if (nextX + this.radius > box.left && nextX - this.radius < box.right &&
+        nextY + this.radius > box.top && nextY - this.radius < box.bottom) {
+
+      // Find which side we're hitting
+      const overlapLeft = (this.x + this.radius) - box.left;
+      const overlapRight = box.right - (this.x - this.radius);
+      const overlapTop = (this.y + this.radius) - box.top;
+      const overlapBottom = box.bottom - (this.y - this.radius);
+
+      const minOverlapX = Math.min(Math.abs(overlapLeft), Math.abs(overlapRight));
+      const minOverlapY = Math.min(Math.abs(overlapTop), Math.abs(overlapBottom));
+
+      if (minOverlapX < minOverlapY) {
+        this.vx = -this.vx;
+        if (overlapLeft < overlapRight) {
+          this.x = box.left - this.radius;
+        } else {
+          this.x = box.right + this.radius;
+        }
+      } else {
+        this.vy = -this.vy;
+        if (overlapTop < overlapBottom) {
+          this.y = box.top - this.radius;
+        } else {
+          this.y = box.bottom + this.radius;
+        }
+      }
     }
 
     this.x += this.vx;
@@ -105,10 +151,19 @@ const balls = [];
 const colors = ['#ddd', '#ccc', '#bbb', '#aaa'];
 const numBalls = 8;
 
+function isInsideContainer(x, y, radius) {
+  const box = getContainerRect();
+  return x + radius > box.left && x - radius < box.right &&
+         y + radius > box.top && y - radius < box.bottom;
+}
+
 for (let i = 0; i < numBalls; i++) {
   const radius = Math.random() * 30 + 15;
-  const x = Math.random() * (canvas.width - radius * 2) + radius;
-  const y = Math.random() * (canvas.height - radius * 2) + radius;
+  let x, y;
+  do {
+    x = Math.random() * (canvas.width - radius * 2) + radius;
+    y = Math.random() * (canvas.height - radius * 2) + radius;
+  } while (isInsideContainer(x, y, radius));
   const vx = (Math.random() - 0.5) * 3;
   const vy = (Math.random() - 0.5) * 3;
   const color = colors[Math.floor(Math.random() * colors.length)];
