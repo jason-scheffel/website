@@ -84,7 +84,7 @@ class Ball {
 
   split() {
     const newRadius = this.radius * 0.8;
-    const speed = Math.max(Math.sqrt(this.vx * this.vx + this.vy * this.vy), 2);
+    const speed = Math.max(Math.sqrt(this.vx * this.vx + this.vy * this.vy), 1);
     const angle1 = Math.atan2(this.vy, this.vx) + Math.PI / 3;
     const angle2 = Math.atan2(this.vy, this.vx) - Math.PI / 3;
 
@@ -238,7 +238,7 @@ class Triangle {
 
   update() {
     // Rotate slowly
-    this.rotation += 0.02;
+    this.rotation += 0.01;
 
     // Wall collision
     if (this.x + this.size > canvas.width || this.x - this.size < 0) {
@@ -311,8 +311,8 @@ for (let i = 0; i < numBalls; i++) {
     x = Math.random() * (canvas.width - radius * 2) + radius;
     y = Math.random() * (canvas.height - radius * 2) + radius;
   } while (isInsideContainer(x, y, radius));
-  const vx = (Math.random() - 0.5) * 3;
-  const vy = (Math.random() - 0.5) * 3;
+  const vx = (Math.random() - 0.5) * 1.5;
+  const vy = (Math.random() - 0.5) * 1.5;
   const color = colors[Math.floor(Math.random() * colors.length)];
 
   balls.push(new Ball(x, y, radius, vx, vy, color));
@@ -325,7 +325,7 @@ do {
   triangleX = Math.random() * (canvas.width - triangleSize * 2) + triangleSize;
   triangleY = Math.random() * (canvas.height - triangleSize * 2) + triangleSize;
 } while (isInsideContainer(triangleX, triangleY, triangleSize));
-const triangle = new Triangle(triangleX, triangleY, triangleSize, 2, 2);
+const triangle = new Triangle(triangleX, triangleY, triangleSize, 1, 1);
 
 function animate() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
