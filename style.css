@@ -67,3 +67,45 @@ a {
 a:hover {
   color: #555;
 }
+
+.key-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem 0;
+  text-align: left;
+}
+
+.key-list li {
+  margin-bottom: 1rem;
+}
+
+.key-name {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.25rem;
+}
+
+.page-desc {
+  margin: 0 0 1.5rem 0;
+  color: #555;
+  max-width: 600px;
+}
+
+a.key-id {
+  font-family: monospace;
+  font-size: 0.85rem;
+}
+
+.key-expires {
+  display: block;
+  font-size: 0.8rem;
+  color: #999;
+  margin-top: 0.25rem;
+}
+
+.key-desc {
+  display: block;
+  font-size: 0.85rem;
+  color: #555;
+  margin-top: 0.25rem;
+}
