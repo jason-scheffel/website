@@ -10,9 +10,11 @@ window.addEventListener('resize', () => {
   canvas.height = window.innerHeight;
 });
 
-function getContainerRect() {
+let containerRect = null;
+
+function updateContainerRect() {
   const rect = container.getBoundingClientRect();
-  return {
+  containerRect = {
     left: rect.left,
     right: rect.right,
     top: rect.top,
@@ -20,8 +22,51 @@ function getContainerRect() {
   };
 }
 
+updateContainerRect();
+window.addEventListener('resize', updateContainerRect);
+
+function getContainerRect() {
+  return containerRect;
+}
+
+// Spatial grid for collision optimization
+const CELL_SIZE = 100;
+let grid = {};
+
+function getCellKey(x, y) {
+  const cx = Math.floor(x / CELL_SIZE);
+  const cy = Math.floor(y / CELL_SIZE);
+  return `${cx},${cy}`;
+}
+
+function clearGrid() {
+  grid = {};
+}
+
+function addToGrid(ball) {
+  const key = getCellKey(ball.x, ball.y);
+  if (!grid[key]) grid[key] = [];
+  grid[key].push(ball);
+}
+
+function getNearbyBalls(ball) {
+  const nearby = [];
+  const cx = Math.floor(ball.x / CELL_SIZE);
+  const cy = Math.floor(ball.y / CELL_SIZE);
+
+  for (let dx = -1; dx <= 1; dx++) {
+    for (let dy = -1; dy <= 1; dy++) {
+      const key = `${cx + dx},${cy + dy}`;
+      if (grid[key]) nearby.push(...grid[key]);
+    }
+  }
+  return nearby;
+}
+
+const MAX_SPLITS = 4;
+
 class Ball {
-  constructor(x, y, radius, vx, vy, color) {
+  constructor(x, y, radius, vx, vy, color, generation = 0, immune = false) {
     this.x = x;
     this.y = y;
     this.radius = radius;
@@ -29,6 +74,24 @@ class Ball {
     this.vy = vy;
     this.color = color;
     this.mass = radius * radius;
+    this.generation = generation;
+    this.immuneFrames = immune ? 30 : 0;
+  }
+
+  canSplit() {
+    return this.generation < MAX_SPLITS && this.radius > 10 && this.immuneFrames === 0;
+  }
+
+  split() {
+    const newRadius = this.radius * 0.8;
+    const speed = Math.max(Math.sqrt(this.vx * this.vx + this.vy * this.vy), 2);
+    const angle1 = Math.atan2(this.vy, this.vx) + Math.PI / 3;
+    const angle2 = Math.atan2(this.vy, this.vx) - Math.PI / 3;
+
+    return [
+      new Ball(this.x - newRadius, this.y, newRadius, Math.cos(angle1) * speed, Math.sin(angle1) * speed, this.color, this.generation + 1, true),
+      new Ball(this.x + newRadius, this.y, newRadius, Math.cos(angle2) * speed, Math.sin(angle2) * speed, this.color, this.generation + 1, true)
+    ];
   }
 
   draw() {
@@ -40,6 +103,9 @@ class Ball {
   }
 
   update() {
+    // Decrease immunity
+    if (this.immuneFrames > 0) this.immuneFrames--;
+
     // Wall collision
     if (this.x + this.radius > canvas.width || this.x - this.radius < 0) {
       this.vx = -this.vx;
@@ -146,6 +212,87 @@ function rotate(x, y, sin, cos, reverse) {
   };
 }
 
+class Triangle {
+  constructor(x, y, size, vx, vy) {
+    this.x = x;
+    this.y = y;
+    this.size = size;
+    this.vx = vx;
+    this.vy = vy;
+    this.rotation = 0;
+  }
+
+  draw() {
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.rotate(this.rotation);
+    ctx.beginPath();
+    ctx.moveTo(0, -this.size);
+    ctx.lineTo(-this.size * 0.866, this.size * 0.5);
+    ctx.lineTo(this.size * 0.866, this.size * 0.5);
+    ctx.closePath();
+    ctx.fillStyle = '#e74c3c';
+    ctx.fill();
+    ctx.restore();
+  }
+
+  update() {
+    // Rotate slowly
+    this.rotation += 0.02;
+
+    // Wall collision
+    if (this.x + this.size > canvas.width || this.x - this.size < 0) {
+      this.vx = -this.vx;
+    }
+    if (this.y + this.size > canvas.height || this.y - this.size < 0) {
+      this.vy = -this.vy;
+    }
+
+    // Container collision
+    const box = getContainerRect();
+    const nextX = this.x + this.vx;
+    const nextY = this.y + this.vy;
+
+    if (nextX + this.size > box.left && nextX - this.size < box.right &&
+        nextY + this.size > box.top && nextY - this.size < box.bottom) {
+      const overlapLeft = (this.x + this.size) - box.left;
+      const overlapRight = box.right - (this.x - this.size);
+      const overlapTop = (this.y + this.size) - box.top;
+      const overlapBottom = box.bottom - (this.y - this.size);
+
+      const minOverlapX = Math.min(Math.abs(overlapLeft), Math.abs(overlapRight));
+      const minOverlapY = Math.min(Math.abs(overlapTop), Math.abs(overlapBottom));
+
+      if (minOverlapX < minOverlapY) {
+        this.vx = -this.vx;
+      } else {
+        this.vy = -this.vy;
+      }
+    }
+
+    this.x += this.vx;
+    this.y += this.vy;
+  }
+
+  collidesWith(ball) {
+    const dx = ball.x - this.x;
+    const dy = ball.y - this.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    return distance < this.size + ball.radius;
+  }
+
+  bounceOff(ball) {
+    const dx = this.x - ball.x;
+    const dy = this.y - ball.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    const nx = dx / distance;
+    const ny = dy / distance;
+    const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+    this.vx = nx * speed;
+    this.vy = ny * speed;
+  }
+}
+
 // Create balls with random sizes and speeds
 const balls = [];
 const colors = ['#ddd', '#ccc', '#bbb', '#aaa'];
@@ -158,7 +305,7 @@ function isInsideContainer(x, y, radius) {
 }
 
 for (let i = 0; i < numBalls; i++) {
-  const radius = Math.random() * 30 + 15;
+  const radius = Math.random() * 40 + 30;
   let x, y;
   do {
     x = Math.random() * (canvas.width - radius * 2) + radius;
@@ -171,17 +318,65 @@ for (let i = 0; i < numBalls; i++) {
   balls.push(new Ball(x, y, radius, vx, vy, color));
 }
 
+// Create the triangle
+let triangleX, triangleY;
+const triangleSize = 25;
+do {
+  triangleX = Math.random() * (canvas.width - triangleSize * 2) + triangleSize;
+  triangleY = Math.random() * (canvas.height - triangleSize * 2) + triangleSize;
+} while (isInsideContainer(triangleX, triangleY, triangleSize));
+const triangle = new Triangle(triangleX, triangleY, triangleSize, 2, 2);
+
 function animate() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+  // Update and draw triangle
+  triangle.update();
+  triangle.draw();
+
+  // Check triangle collisions with balls and split them
+  const ballsToAdd = [];
+  const ballsToRemove = [];
+
+  for (let i = 0; i < balls.length; i++) {
+    if (triangle.collidesWith(balls[i])) {
+      triangle.bounceOff(balls[i]);
+      if (balls[i].canSplit()) {
+        ballsToRemove.push(i);
+        ballsToAdd.push(...balls[i].split());
+      }
+    }
+  }
+
+  // Remove split balls (in reverse order to preserve indices)
+  for (let i = ballsToRemove.length - 1; i >= 0; i--) {
+    balls.splice(ballsToRemove[i], 1);
+  }
+
+  // Add new balls
+  balls.push(...ballsToAdd);
+
+  // Update all balls and build spatial grid
+  clearGrid();
   for (let i = 0; i < balls.length; i++) {
     balls[i].update();
-    balls[i].draw();
+    addToGrid(balls[i]);
+  }
 
-    // Check collision with other balls
-    for (let j = i + 1; j < balls.length; j++) {
-      checkCollision(balls[i], balls[j]);
+  // Check collisions using spatial grid
+  const checked = new WeakSet();
+  for (const ball of balls) {
+    const nearby = getNearbyBalls(ball);
+    for (const other of nearby) {
+      if (ball === other || checked.has(other)) continue;
+      checkCollision(ball, other);
     }
+    checked.add(ball);
+  }
+
+  // Draw all balls
+  for (let i = 0; i < balls.length; i++) {
+    balls[i].draw();
   }
 
   requestAnimationFrame(animate);
