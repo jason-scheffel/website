@@ -36,26 +36,28 @@ h1 {
 }
 
 .links {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  align-items: center;
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 0.5rem 0.5rem;
 }
 
 .link-item {
-  display: flex;
-  gap: 0.5rem;
-  align-items: baseline;
+  display: contents;
 }
 
 .label {
   color: #999;
   font-size: 0.9rem;
-  font-style: italic;
+  font-family: monospace;
+  justify-self: end;
 }
 
 .label::after {
   content: ":";
+}
+
+.link-item a {
+  justify-self: start;
 }
 
 a {
