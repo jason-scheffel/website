@@ -226,13 +226,32 @@ class Triangle {
     ctx.save();
     ctx.translate(this.x, this.y);
     ctx.rotate(this.rotation);
+    const s = this.size;
+
+    // Backpack
     ctx.beginPath();
-    ctx.moveTo(0, -this.size);
-    ctx.lineTo(-this.size * 0.866, this.size * 0.5);
-    ctx.lineTo(this.size * 0.866, this.size * 0.5);
-    ctx.closePath();
+    ctx.roundRect(-0.8 * s, -0.35 * s, 0.4 * s, 0.75 * s, 0.12 * s);
+    ctx.fillStyle = '#b03a2e';
+    ctx.fill();
+
+    // Body and legs
+    ctx.beginPath();
+    ctx.roundRect(-0.5 * s, -0.85 * s, 1.05 * s, 1.45 * s, [0.5 * s, 0.5 * s, 0.15 * s, 0.15 * s]);
+    ctx.roundRect(-0.5 * s, 0.4 * s, 0.4 * s, 0.5 * s, 0.1 * s);
+    ctx.roundRect(0.15 * s, 0.4 * s, 0.4 * s, 0.5 * s, 0.1 * s);
     ctx.fillStyle = '#e74c3c';
     ctx.fill();
+
+    // Visor
+    ctx.beginPath();
+    ctx.roundRect(0, -0.55 * s, 0.75 * s, 0.4 * s, 0.2 * s);
+    ctx.fillStyle = '#9fd8ef';
+    ctx.fill();
+    ctx.beginPath();
+    ctx.roundRect(0.3 * s, -0.48 * s, 0.3 * s, 0.1 * s, 0.05 * s);
+    ctx.fillStyle = '#fff';
+    ctx.fill();
+
     ctx.restore();
   }
 
